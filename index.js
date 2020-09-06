@@ -2,6 +2,13 @@ const fs = require('fs').promises
 const { spawnSync } = require('child_process')
 
 module.exports = class PolyfillIoHtmlWebpackPlugin {
+  constructor(options = {}) {
+    this.options = {
+      cwd: process.cwd(),
+      ...options,
+    }
+  }
+
   /**
    * @param {import('webpack').Compiler} compiler
    */
@@ -13,7 +20,7 @@ module.exports = class PolyfillIoHtmlWebpackPlugin {
         require('html-webpack-plugin').getHooks(compilation).alterAssetTags
 
       hook.tapAsync(this.constructor.name, async (htmlPlugin, callback) => {
-        const cwd = process.cwd()
+        const cwd = this.options.cwd
         const TMP_DIR = '.tmp-polyfill-io-html-webpack-plugin'
         const FILENAME = 'source.js'
 

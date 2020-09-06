@@ -13,7 +13,12 @@ it('embed script tag', function (done) {
       output: {
         path: path.join(__dirname, 'dist'),
       },
-      plugins: [new HtmlWebpackPlugin(), new PolyfillIoHtmlWebpackPlugin()],
+      plugins: [
+        new HtmlWebpackPlugin(),
+        new PolyfillIoHtmlWebpackPlugin({
+          cwd: __dirname,
+        }),
+      ],
     },
     (err, result) => {
       if (err) {
@@ -28,7 +33,7 @@ it('embed script tag', function (done) {
 
       expect(typeof html).toBe('string')
       expect(html).toContain(
-        '<script src="https://polyfill.io/v3/polyfill.min.js?features=Array.from,ArrayBuffer,console,document,Function.prototype.bind,IntersectionObserver,Object.create,Object.defineProperty,Promise,Symbol,Symbol.toStringTag"></script>',
+        '<script src="https://polyfill.io/v3/polyfill.min.js?features=Array.from,console,IntersectionObserver,Promise,Symbol,Symbol.toStringTag"></script>',
       )
 
       done()
