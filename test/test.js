@@ -1,43 +1,21 @@
 const path = require('path')
-const MemoryFileSystem = require('memory-fs')
-
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MemoryFileSystem = require('memory-fs')
 
 const PolyfillIoHtmlWebpackPlugin = require('../')
 
-it('embed script tag', function (done) {
+exports.compile = function compile(options, handler) {
   const compiler = webpack(
     {
       entry: path.join(__dirname, './fixture/index.js'),
       output: {
         path: path.join(__dirname, 'dist'),
       },
-      plugins: [
-        new HtmlWebpackPlugin(),
-        new PolyfillIoHtmlWebpackPlugin({
-          cwd: __dirname,
-        }),
-      ],
+      plugins: [new HtmlWebpackPlugin(), new PolyfillIoHtmlWebpackPlugin(options)],
     },
-    (err, result) => {
-      if (err) {
-        return done(err)
-      }
-
-      if (result.compilation.errors && result.compilation.errors.length) {
-        return done(result.compilation.errors)
-      }
-
-      const html = result.compilation.assets['index.html'].source()
-
-      expect(typeof html).toBe('string')
-      expect(html).toContain(
-        '<script src="https://polyfill.io/v3/polyfill.min.js?features=Array.from,console,IntersectionObserver,Promise,Symbol,Symbol.toStringTag"></script>',
-      )
-
-      done()
-    },
+    handler,
   )
+
   compiler.outputFileSystem = new MemoryFileSystem()
-})
+}

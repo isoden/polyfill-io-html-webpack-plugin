@@ -21,7 +21,7 @@
     "html-webpack-plugin": ">= 4"
   },
   "scripts": {
-    "test": "jest test/test.js --env node"
+    "test": "jest test/*/test.js --env node"
   },
   "keywords": [
     "polyfill.io",

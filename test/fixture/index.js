@@ -3,5 +3,6 @@ export function main() {
 
   new IntersectionObserver(() => {})
 
+  // split chunk
   import('./add').then(({ add }) => add(1, 2))
 }

@@ -1,5 +1,11 @@
 const fs = require('fs').promises
-const { spawnSync } = require('child_process')
+const { exec } = require('child_process')
+const { promisify } = require('util')
+
+const execAsync = promisify(exec)
+
+const ERROR_MESSAGE_DONT_NEED_POLYFILL =
+  'You do not need to use polyfill.io as all your supported browsers support all the features your website currently uses.'
 
 module.exports = class PolyfillIoHtmlWebpackPlugin {
   constructor(options = {}) {
@@ -38,25 +44,33 @@ module.exports = class PolyfillIoHtmlWebpackPlugin {
 
           await fs.writeFile(`${cwd}/${TMP_DIR}/${FILENAME}`, file, 'utf-8')
 
-          const result = spawnSync(
-            `npx`,
-            [`create-polyfill-service-url`, `analyse`, `--file`, `${TMP_DIR}/${FILENAME}`],
+          // 処理に成功しても、 `stderr` が空じゃないことが多々ある
+          const { stdout, stderr } = await execAsync(
+            `npx create-polyfill-service-url analyse --file ${TMP_DIR}/${FILENAME}`,
             {
-              cwd: cwd,
+              cwd,
             },
           )
 
-          if (result.error) {
-            throw result.error
+          if (stdout) {
+            htmlPlugin.assetTags.scripts.unshift({
+              tagName: 'script',
+              selfClosingTag: false,
+              attributes: {
+                src: stdout,
+              },
+            })
+
+            return callback(null, htmlPlugin)
           }
 
-          htmlPlugin.assetTags.scripts.unshift({
-            tagName: 'script',
-            selfClosingTag: false,
-            attributes: {
-              src: result.stdout,
-            },
-          })
+          if (stderr) {
+            if (stderr.includes(ERROR_MESSAGE_DONT_NEED_POLYFILL)) {
+              return callback(null, htmlPlugin)
+            }
+
+            throw new Error(stderr)
+          }
 
           callback(null, htmlPlugin)
         } catch (error) {
