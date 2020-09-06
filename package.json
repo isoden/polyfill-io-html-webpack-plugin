@@ -1,0 +1,40 @@
+{
+  "name": "@isoden/polyfill-io-html-webpack-plugin",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "create-polyfill-service-url": "^2.2.2"
+  },
+  "devDependencies": {
+    "@types/html-webpack-plugin": "^3.2.3",
+    "@types/webpack": "^4.41.22",
+    "html-webpack-plugin": "^4.4.1",
+    "jest": "^26.4.2",
+    "webpack": "^4.44.1"
+  },
+  "peerDependencies": {
+    "webpack": ">= 4",
+    "html-webpack-plugin": ">= 4"
+  },
+  "scripts": {
+    "test": "jest test/test.js --env node"
+  },
+  "keywords": [
+    "polyfill.io",
+    "html-webpack-plugin"
+  ],
+  "author": "isoden (https://github.com/isoden)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isoden/polyfill-io-html-webpack-plugin.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/isoden/polyfill-io-html-webpack-plugin/issues"
+  },
+  "homepage": "https://github.com/isoden/polyfill-io-html-webpack-plugin#readme"
+}
