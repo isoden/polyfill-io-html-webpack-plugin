@@ -38,9 +38,9 @@ module.exports = class PolyfillIoHtmlWebpackPlugin {
               chunk.files
                 .filter((filename) => /\.js$/.test(filename))
                 .map((file) => compilation.assets[file].source())
-                .join(';'),
+                .join('\n;'),
             )
-            .join('')
+            .join('\n;')
 
           await fs.writeFile(`${cwd}/${TMP_DIR}/${FILENAME}`, file, 'utf-8')
 
