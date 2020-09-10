@@ -10,6 +10,7 @@ const ERROR_MESSAGE_DONT_NEED_POLYFILL =
 module.exports = class PolyfillIoHtmlWebpackPlugin {
   constructor(options = {}) {
     this.options = {
+      disabled: false,
       cwd: process.cwd(),
       ...options,
     }
@@ -19,6 +20,10 @@ module.exports = class PolyfillIoHtmlWebpackPlugin {
    * @param {import('webpack').Compiler} compiler
    */
   apply(compiler) {
+    if (this.options.disabled) {
+      return
+    }
+
     compiler.hooks.compilation.tap(this.constructor.name, async (compilation) => {
       /** @type {import('html-webpack-plugin').Hooks['alterAssetTags']} */
       const hook =
@@ -55,7 +60,7 @@ module.exports = class PolyfillIoHtmlWebpackPlugin {
           if (stdout) {
             htmlPlugin.assetTags.scripts.unshift({
               tagName: 'script',
-              selfClosingTag: false,
+              voidTag: false,
               attributes: {
                 src: stdout,
               },
